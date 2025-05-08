@@ -1,24 +1,44 @@
-clc;
-// Parameters
-g =2;
-p = 101;
-// Private keys
-x = 3;  // Alice's private key
-y = 6;  // Bob's private key
-// Calculate public values
-R1 = modulo(g^x, p);  // Alice's public value
-R2 = modulo(g^y, p);  // Bob's public value
-// Calculate shared secret
-K_Alice = modulo(R2^x, p);
-K_Bob = modulo(R1^y, p);
-K_Final = K_Alice;  // Both should be equal
-// Display results
-printf("Result:\n");
-printf("\nThe results are as follows:\n\n");
-printf("1) Alice choose x=%d & calculates R1=%d\n", x, R1);
-printf("2) Bob chooses y=%d & calculates R2=%d\n", y, R2);
-printf("3) Alice sends the number %d to Bob\n", R1);
-printf("4) Bob sends the number %d to Alice\n", R2);
-printf("5) Alice calculates the symmetric key k=%d\n", K_Alice);
-printf("6) Bob calculates the symmetric key k=%d\n", K_Bob);
-printf("7) K_Final=%d\n", K_Final);
+#include <stdio.h>
+#include <math.h>
+
+// Function to perform modular exponentiation
+long long power(long long base, long long exp, long long mod) {
+    long long res = 1;
+    base = base % mod;
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            res = (res * base) % mod;
+        }
+        exp = exp >> 1;
+        base = (base * base) % mod;
+    }
+    return res;
+}
+
+int main() {
+    long long p, g, a, b, A, B, keyA, keyB;
+
+    // Prime number (p) and primitive root (g)
+    p = 23;  
+    g = 5;
+
+    // Private keys (chosen randomly)
+    a = 6;   
+    b = 15;  
+
+    // Calculate public keys
+    A = power(g, a, p);
+    B = power(g, b, p);
+
+    printf("Public key A: %lld\n", A);
+    printf("Public key B: %lld\n", B);
+
+    // Calculate shared secret keys
+    keyA = power(B, a, p);
+    keyB = power(A, b, p);
+
+    printf("Shared key calculated by A: %lld\n", keyA);
+    printf("Shared key calculated by B: %lld\n", keyB);
+
+    return 0;
+}
